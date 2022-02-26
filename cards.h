@@ -29,7 +29,7 @@ class CardBST {
         bool insert(char suit, int value);
         void printPreOrder() const;
         void printInOrder() const;
-        void printPostOrder() const;
+        void printPosOrder() const;
         bool contains (char suit, int value) const;
         Card* getPredecessor(char suit, int value) const;
         Card* getSuccessor(char suit, int value) const;
@@ -45,7 +45,7 @@ class CardBST {
         bool insert(Card *c, Card *n);
         void printPreOrder(Card *c) const;
         void printInOrder(Card *c) const;
-        void printPostOrder(Card *c) const;
+        void printPosOrder(Card *c) const;
         int count(Card *c) const;
         Card* getSuccessorCard(Card *c) const;
         Card* getPredecessorCard(Card *c) const;
