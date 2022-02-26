@@ -1,6 +1,6 @@
 // intbst.cpp
-// Implements class CardBST
-// Jeffrey Mun 5970595 2/03/2022
+// Colin Baylis 2/22/22
+//Implementation of the classes defined in cards.h
 #include <iostream>
 #include "cards.h"
 #include "utility.h"
@@ -23,7 +23,6 @@ Card* Card::operator=(const Card& c1){
     return this;
 }
 
-// recursive helper for destructor
 void CardBST::clear(Card *n) {
     if (n) {
 	clear(n->left);
@@ -32,7 +31,6 @@ void CardBST::clear(Card *n) {
     }
 }
 
-// insert value in tree; return false if duplicate
 bool CardBST::insert(char suit, int value) {
     // handle special case of empty tree first
     if (!root) {
@@ -42,12 +40,6 @@ bool CardBST::insert(char suit, int value) {
     // otherwise use recursive helper
     return insert(new Card(suit, value), root);
 }
-
-// recursive helper for insert (assumes n is never 0)
-/**
- * @brief 
- * CHANGE STUFF IN INSERT; ADOPT IT TO CARD STUFF
- */
 
 bool CardBST::insert(Card *c, Card *n) {
     if (*c == *n) {
@@ -72,14 +64,9 @@ bool CardBST::insert(Card *c, Card *n) {
         }
     }
 }
-
-// print tree data pre-order
-
 void CardBST::printPreOrder() const {
     printPreOrder(root);
 }
-
-// recursive helper for printPreOrder()
 
 void CardBST::printPreOrder(Card *n) const {
     if (n) {
@@ -88,8 +75,6 @@ void CardBST::printPreOrder(Card *n) const {
 	printPreOrder(n->right);
     }
 }
-
-// print tree data in-order, with helper
 
 void CardBST::printInOrder() const {
     printInOrder(root);
@@ -104,8 +89,6 @@ void CardBST::printInOrder(Card *n) const {
     }
 }
 
-// prints tree data post-order, with helper
-
 void CardBST::printPostOrder() const {
     printPostOrder(root);
 }
@@ -118,8 +101,6 @@ void CardBST::printPostOrder(Card *n) const {
         cout << n->suit << n->value << " ";
     }
 }
-
-// return count of values
 
 int CardBST::count() const {
     return count(root);
