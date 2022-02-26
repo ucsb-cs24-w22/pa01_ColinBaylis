@@ -172,7 +172,7 @@ Card* CardBST::getPredecessorCard(Card *c) const{
         }
         n = p;
     }
-    return n; // REPLACE THIS NON-SOLUTION
+    return n;
 }
 
 Card* CardBST::getPredecessor(char suit, int number) const{
@@ -200,9 +200,6 @@ Card* CardBST::getSuccessorCard(Card *c) const{
 Card* CardBST::getSuccessor(char suit, int number) const{
     return getSuccessorCard(new Card(suit, number)) ? getSuccessorCard(new Card(suit, number)): 0;
 }
-
-// deletes the Card containing the given number from the tree
-// returns true if the node exist and was deleted or false if the node does not exist
 
 bool CardBST::remove(char suit, int number){
     Card *c = new Card(suit, number);
@@ -240,7 +237,7 @@ bool CardBST::remove(char suit, int number){
         n->suit = temp->suit;
         n->number = temp->number;
     }
-    return ans; // REPLACE THIS NON-SOLUTION
+    return ans; 
 }
   
 string Card::toString() {
@@ -278,17 +275,8 @@ bool Card::operator <(const Card& c1) {
 
 bool Card::operator >(const Card& c1) {
     char temp1, temp2;
-    if(c1.suit == 'h') {
-      temp2 = 'z';
-    }
-    else {
-      temp2 = c1.suit;
-    }
-    if(this->suit == 'h') {
-      temp1 = 'z';
-    } else {
-      temp1 = this->suit;
-    }
+    temp2 = c1.suit;
+    temp1 = this->suit;
     if(temp1 == temp2) {
       return this->number > c1.number;
     }
