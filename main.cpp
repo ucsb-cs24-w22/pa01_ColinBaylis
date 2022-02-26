@@ -5,17 +5,6 @@
 #include "utility.h"
 
 using namespace std;
-/**
- * @brief 
- * åå
- * @param argv 
- * @param argc 
- * @return int 
- * 
- * MAKE STUFF FOR <, >, == operators specific to Card
- * use that instead to compare
- * u all good jeff :)
- */
 
 int main(int argv, char** argc){
   if(argv < 3){
@@ -29,7 +18,6 @@ int main(int argv, char** argc){
   char suit;
   int value;
   CardBST alice, bob;
-  bool loop = true;
 
 
   if (cardFile1.fail() || cardFile2.fail() ){
@@ -51,51 +39,47 @@ int main(int argv, char** argc){
     bob.insert(suit, value);
   }
   cardFile2.close();
-
-
-  Card* amin = alice.min();
-  Card* bmax = bob.max();
   bool amatch, bmatch;
+  bool invalid = false;
+
   while(true) {
+    Card* amin = alice.min();
+    Card* bmax = bob.max();
     amatch = false;
     bmatch = false;
-    while(alice.getSuccessor(amin->suit, amin->value) && !amatch) {
+
+    while(!amatch && amin && alice.getSuccessor(amin->suit, amin->value)) {
       Card* temp = alice.getSuccessor(amin->suit, amin->value);
       if(bob.contains(amin->suit, amin->value)) {
         cout << "Alice picked matching card " << amin->toString() << endl;
-        alice.remove(amin->suit, amin->value);
-        bob.remove(amin->suit, amin->value);
+        char temp1 = amin->suit;
+        int temp2 = amin->value;
+        alice.remove(temp1, temp2);
+        bob.remove(temp1, temp2);
         amatch = true;
       }
       amin = temp;
-      if(amatch) break;
     }
-    while(bob.getPredecessor(bmax->suit, bmax->value) && !bmatch) {
+    while(!bmatch && bmax && bob.getPredecessor(bmax->suit, bmax->value)) {
       Card* temp = bob.getPredecessor(bmax->suit, bmax->value);
       if(alice.contains(bmax->suit, bmax->value)) {
         cout << "Bob picked matching card " << bmax->toString() << endl;
-        bob.remove(bmax->suit, bmax->value);
-        alice.remove(bmax->suit, bmax->value);
+        char temp1 = bmax->suit;
+        int temp2 = bmax->value;
+        bob.remove(temp1, temp2);
+        alice.remove(temp1, temp2);
         bmatch = true;
       }
       bmax = temp;
-      if(bmax) break;
     }
-    if(!amatch && !bmatch) {break;}
+    if(!amatch || !bmatch || invalid) {
+      break;
+    }
   }
 
-  cout << "alice: " << endl;
+  cout << "\nAlice's cards:" << endl;
   alice.printInOrder();
-  cout << endl;
-  cout << "bob: " << endl;
+  cout << "\nBob's cards:" << endl;
   bob.printInOrder();
-  cout << endl;
-
-  cout << "alice: " << endl;
-  alice.printInOrder();
-  cout << endl;
-  cout << "bob: " << endl;
-  bob.printInOrder();
-  cout << endl;
   return 0;
 }
