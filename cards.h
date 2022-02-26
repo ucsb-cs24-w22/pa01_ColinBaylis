@@ -1,6 +1,5 @@
 //cards.h
-//Authors: Your name and your partner's name
-//All class declarations go here
+//Colin Baylis 6061543 2/22/22
 
 #ifndef CARDS_H
 #define CARDS_H
