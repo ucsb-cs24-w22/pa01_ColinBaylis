@@ -275,8 +275,17 @@ bool Card::operator <(const Card& c1) {
 
 bool Card::operator >(const Card& c1) {
     char temp1, temp2;
-    temp2 = c1.suit;
-    temp1 = this->suit;
+    if(c1.suit == 'h') {
+      temp2 = 'z';
+    }
+    else {
+      temp2 = c1.suit;
+    }
+    if(this->suit == 'h') {
+      temp1 = 'z';
+    } else {
+      temp1 = this->suit;
+    }
     if(temp1 == temp2) {
       return this->number > c1.number;
     }
