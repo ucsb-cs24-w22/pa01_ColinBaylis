@@ -1,6 +1,6 @@
 // intbst.cpp
-// Colin Baylis 2/22/22
-//Implementation of the classes defined in cards.h
+// Implements class CardBST
+// Jeffrey Mun 5970595 2/03/2022
 #include <iostream>
 #include "cards.h"
 #include "utility.h"
@@ -8,70 +8,88 @@
 using namespace std;
 
 CardBST::CardBST() : root(nullptr) { }
-// clear nodes
+
+// destructor deletes all nodes
 CardBST::~CardBST() {
     clear(root);
 }
 
 Card* Card::operator=(const Card& c1){
-    this->start = c1.start;
-    this->number = c1.number;
-    this->lt = c1.lt;
-    this->rt = c1.rt;
-    this->head = c1.head;
+    this->suit = c1.suit;
+    this->value = c1.value;
+    this->left = c1.left;
+    this->right = c1.right;
+    this->parent = c1.parent;
     return this;
 }
 
+// recursive helper for destructor
 void CardBST::clear(Card *n) {
     if (n) {
-	clear(n->lt);
-	clear(n->rt);
+	clear(n->left);
+	clear(n->right);
 	delete n;
     }
 }
 
-bool CardBST::insert(char suit, int number) {
+// insert value in tree; return false if duplicate
+bool CardBST::insert(char suit, int value) {
+    // handle special case of empty tree first
     if (!root) {
-        root = new Card(suit, number);
+        root = new Card(suit, value);
         return true;
     }
-    return insert(new Card(suit, number), root);
+    // otherwise use recursive helper
+    return insert(new Card(suit, value), root);
 }
+
+// recursive helper for insert (assumes n is never 0)
+/**
+ * @brief 
+ * CHANGE STUFF IN INSERT; ADOPT IT TO CARD STUFF
+ */
 
 bool CardBST::insert(Card *c, Card *n) {
     if (*c == *n) {
 	    return false;
     }
     if (*c < *n) {
-        if (n->lt)
-            return insert(c, n->lt);
+        if (n->left)
+            return insert(c, n->left);
         else {
-            n->lt = new Card(c->suit, c->number);
-            n->lt->head = n;
+            n->left = new Card(c->suit, c->value);
+            n->left->parent = n;
             return true;
         }
     }
     else {
-        if (n->rt)
-            return insert(c, n->rt);
+        if (n->right)
+            return insert(c, n->right);
         else {
-            n->rt = new Card(c->suit, c->number);
-            n->rt->head = n;
+            n->right = new Card(c->suit, c->value);
+            n->right->parent = n;
             return true;
         }
     }
 }
+
+// print tree data pre-order
+
 void CardBST::printPreOrder() const {
     printPreOrder(root);
 }
 
+// recursive helper for printPreOrder()
+
 void CardBST::printPreOrder(Card *n) const {
     if (n) {
-	cout << n->suit << n->number << " ";
-	printPreOrder(n->lt);
-	printPreOrder(n->rt);
+	cout << n->suit << n->value << " ";
+	printPreOrder(n->left);
+	printPreOrder(n->right);
     }
 }
+
+// print tree data in-order, with helper
 
 void CardBST::printInOrder() const {
     printInOrder(root);
@@ -80,24 +98,28 @@ void CardBST::printInOrder() const {
 
 void CardBST::printInOrder(Card *n) const {
     if (n) {
-        printInOrder(n->lt);
-        cout << n->suit << n->number << " ";
-        printInOrder(n->rt);
+        printInOrder(n->left);
+        cout << n->suit << n->value << " ";
+        printInOrder(n->right);
     }
 }
 
-void CardBST::printPosOrder() const {
-    printPosOrder(root);
+// prints tree data post-order, with helper
+
+void CardBST::printPostOrder() const {
+    printPostOrder(root);
 }
 
 
-void CardBST::printPosOrder(Card *n) const {
+void CardBST::printPostOrder(Card *n) const {
     if(n) {
-        printPosOrder(n->lt);
-        printPosOrder(n->rt);
-        cout << n->suit << n->number << " ";
+        printPostOrder(n->left);
+        printPostOrder(n->right);
+        cout << n->suit << n->value << " ";
     }
 }
+
+// return count of values
 
 int CardBST::count() const {
     return count(root);
@@ -108,8 +130,8 @@ int CardBST::count() const {
 int CardBST::count(Card *n) const {
     int count = 0;
     if(n) {
-        count += CardBST::count(n->lt);
-        count += CardBST::count(n->rt);
+        count += CardBST::count(n->left);
+        count += CardBST::count(n->right);
         return count + 1;
     }
     return count;
@@ -117,8 +139,8 @@ int CardBST::count(Card *n) const {
 
 Card* CardBST::min() const {
     Card *n = root;
-    while(n && n->lt) {
-        n = n->lt;
+    while(n && n->left) {
+        n = n->left;
     }
     if(!n) {return 0;}
     return n;
@@ -126,12 +148,31 @@ Card* CardBST::min() const {
 
 Card* CardBST::max() const {
     Card *n = root;
-    while(n && n->rt) {
-        n = n->rt;
+    while(n && n->right) {
+        n = n->right;
     }
     if(!n) { return 0; }
     return n;
 }
+
+/**
+ * @brief 
+ * CHANGE STUFF FOR INFOS ON THIS TOO
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
+// IMPLEMENT THIS FIRST: returns the node for a given value or NULL if none exists
+// Parameters:
+// T value: the value to be found
+// Card* n: the node to start with (for a recursive call)
+// Whenever you call this method from somewhere else, pass it
+// the root node as "n"
+
 
 Card* CardBST::getCardFor(Card* c, Card* n) const{
     Card *ans = nullptr;
@@ -140,118 +181,130 @@ Card* CardBST::getCardFor(Card* c, Card* n) const{
             ans = n;
         }
         if(!ans){
-            ans = CardBST::getCardFor(c, n->lt);
+            ans = CardBST::getCardFor(c, n->left);
         }
         if(!ans) {
-            ans = CardBST::getCardFor(c, n->rt);
+            ans = CardBST::getCardFor(c, n->right);
         }
     }
     return ans;
 }
 
 
-bool CardBST::contains(char suit, int number) const {
+bool CardBST::contains(char suit, int value) const {
     Card *n = root;
-    return CardBST::getCardFor(new Card(suit, number), n) != nullptr;
+    return CardBST::getCardFor(new Card(suit, value), n) != nullptr;
 }
+// returns the Card containing the predecessor of the given value
 
 Card* CardBST::getPredecessorCard(Card *c) const{
     Card *n = getCardFor(c, this->root);
     if(*n == *min()) {
         return 0;
     }
-    if(n && n->lt) {
-        n = n->lt;
-        while(n && n->rt) {
-            n = n->rt;
+    if(n && n->left) {
+        n = n->left;
+        while(n && n->right) {
+            n = n->right;
         }
-    } else if(n && n->head) {
-        Card *p = n->head;
+    } else if(n && n->parent) {
+        Card *p = n->parent;
         while(p && (*n < *p)) {
-            p = p->head;
+            p = p->parent;
         }
         n = p;
     }
-    return n;
+    return n; // REPLACE THIS NON-SOLUTION
 }
 
-Card* CardBST::getPredecessor(char suit, int number) const{
-    return getPredecessorCard(new Card(suit, number)) ? getPredecessorCard(new Card(suit, number)) : 0; 
+// returns the predecessor value of the given value or 0 if there is none
+
+Card* CardBST::getPredecessor(char suit, int value) const{
+    return getPredecessorCard(new Card(suit, value)) ? getPredecessorCard(new Card(suit, value)) : 0; 
 }
+
+// returns the Card containing the successor of the given value
+
 Card* CardBST::getSuccessorCard(Card *c) const{
     Card *n = getCardFor(c, this->root);
     if(*n == *max()) {
         return 0;
     }
-    if(n && n->rt) {
-        n = n->rt;
-        while(n && n->lt) {
-            n = n->lt;
+    if(n && n->right) {
+        n = n->right;
+        while(n && n->left) {
+            n = n->left;
         }
-    } else if(n && n->head) {
-        Card *p = n->head;
+    } else if(n && n->parent) {
+        Card *p = n->parent;
         while(p && (*n > *p)) {
-            p = p->head;
+            p = p->parent;
         }
         n = p;
     }
     return n; 
 }
-Card* CardBST::getSuccessor(char suit, int number) const{
-    return getSuccessorCard(new Card(suit, number)) ? getSuccessorCard(new Card(suit, number)): 0;
+
+// returns the successor value of the given value or 0 if there is none
+
+Card* CardBST::getSuccessor(char suit, int value) const{
+    return getSuccessorCard(new Card(suit, value)) ? getSuccessorCard(new Card(suit, value)): 0;
 }
 
-bool CardBST::remove(char suit, int number){
-    Card *c = new Card(suit, number);
+// deletes the Card containing the given value from the tree
+// returns true if the node exist and was deleted or false if the node does not exist
+
+bool CardBST::remove(char suit, int value){
+    Card *c = new Card(suit, value);
     bool ans = false;
     Card *n = getCardFor(c, this->root);
-    if(n && !n->head && !n->lt && !n->rt) {
+    if(n && !n->parent && !n->left && !n->right) {
         delete(n);
         this->root = nullptr;
         return true;
     }
-    if(n && !n->lt && !n->rt) {
-        if(n->head && (*n > *n->head)) {
-            n->head->rt = 0;
-        } else if (n->head) {
-            n->head->lt = 0;
+    if(n && !n->left && !n->right) {
+        if(n->parent && (*n > *n->parent)) {
+            n->parent->right = 0;
+        } else if (n->parent) {
+            n->parent->left = 0;
         }
         if(*n == *c) {
             n = 0;
         }
         delete(n);
         ans = true;
-    } else if(n && (!n->lt || !n->rt)) {
-        if(n->head && (*n > *n->head)) {
-            n->head->rt = n->lt ? n->lt : n->rt;
-        } else if(n->head) {
-            n->head->lt = n->lt ? n->lt : n->rt;
+    } else if(n && (!n->left || !n->right)) {
+        if(n->parent && (*n > *n->parent)) {
+            n->parent->right = n->left ? n->left : n->right;
+        } else if(n->parent) {
+            n->parent->left = n->left ? n->left : n->right;
         }
         delete(n);
         ans = true;
-    } else if (n && n->lt && n->rt) {
+    } else if (n && n->left && n->right) {
         Card *s = new Card();
         s = getSuccessorCard(n);
         Card *temp = s;
-        ans = remove(s->suit, s->number);
+        ans = remove(s->suit, s->value);
         n->suit = temp->suit;
-        n->number = temp->number;
+        n->value = temp->value;
     }
-    return ans; 
+    return ans; // REPLACE THIS NON-SOLUTION
 }
   
 string Card::toString() {
     string x = "";
     x.insert(0, 1, this->suit);
-    return x + " " + convertValString(this->number);
+    return x + " " + convertValString(this->value);
 }
 
 bool Card::operator ==(Card const& c1) {
-    return (this->suit == c1.suit) && (this->number == c1.number);
+    return (this->suit == c1.suit) && (this->value == c1.value);
 }
 
 bool Card::operator !=(Card const& c1) {
-    return !(this->suit == c1.suit) || !(this->number == c1.number);
+    return !(this->suit == c1.suit) || !(this->value == c1.value);
 }
 
 bool Card::operator <(const Card& c1) {
@@ -268,7 +321,7 @@ bool Card::operator <(const Card& c1) {
       temp1 = this->suit;
     }
     if(temp1 == temp2) {
-      return this->number < c1.number;
+      return this->value < c1.value;
     }
     return temp1 < temp2;
   }
@@ -287,7 +340,7 @@ bool Card::operator >(const Card& c1) {
       temp1 = this->suit;
     }
     if(temp1 == temp2) {
-      return this->number > c1.number;
+      return this->value > c1.value;
     }
     return temp1 > temp2;
   }
