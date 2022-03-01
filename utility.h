@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace std;
 
-int convertValInt(string s1);
-string convertValString(int x);
+int valToInt(string s1);
+string valToString(int x);
 
 #endif
