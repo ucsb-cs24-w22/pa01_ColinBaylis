@@ -26,28 +26,28 @@ class CardBST {
         CardBST();
         ~CardBST();
         bool insert(char suit, int value);
-        void printPreOrder() const;
-        void printInOrder() const;
+        void preOrderPrint() const;
+        void inOrderPrint() const;
         void printPostOrder() const;
         bool contains (char suit, int value) const;
-        Card* getPredecessor(char suit, int value) const;
-        Card* getSuccessor(char suit, int value) const;
+        Card* getNext(char suit, int value) const;
+        Card* getPrev(char suit, int value) const;
         bool remove(char suit, int value);
-        int count() const;
-        Card* min() const;
-        Card* max() const;
+        int countCards() const;
+        Card* minim() const;
+        Card* maxim() const;
         
     private:
         Card *root;
-        Card* getCardFor(Card *c, Card* n) const;
+        Card* returnCard(Card *c, Card* n) const;
         void clear(Card *c);
         bool insert(Card *c, Card *n);
-        void printPreOrder(Card *c) const;
-        void printInOrder(Card *c) const;
+        void preOrderPrint(Card *c) const;
+        void inOrderPrint(Card *c) const;
         void printPostOrder(Card *c) const;
-        int count(Card *c) const;
-        Card* getSuccessorCard(Card *c) const;
-        Card* getPredecessorCard(Card *c) const;
+        int countCards(Card *c) const;
+        Card* getPrevCard(Card *c) const;
+        Card* getNextCard(Card *c) const;
 };
 
 #endif
