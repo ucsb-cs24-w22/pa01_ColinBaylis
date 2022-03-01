@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int convertValInt(string s1) {
+int valToInt(string s1) {
   if(s1 == "a") {
     return 0;
   } 
@@ -21,7 +21,7 @@ int convertValInt(string s1) {
   return stoi(s1);
 }
 
-string convertValString(int x) {
+string valToString(int x) {
   if(x == 0) {
     return "a";
   } 
