@@ -27,7 +27,7 @@ int main(int argv, char** argc){
 
   while (getline (cardFile1, line) && (line.length() > 0)){
     suit = line[0];
-    value = convertValInt(line.substr(2));
+    value = valToInt(line.substr(2));
     alice.insert(suit, value);
   }
   cardFile1.close();
@@ -35,51 +35,51 @@ int main(int argv, char** argc){
 
   while (getline (cardFile2, line) && (line.length() > 0)){
     suit = line[0];
-    value = convertValInt(line.substr(2));
+    value = valToInt(line.substr(2));
     bob.insert(suit, value);
   }
   cardFile2.close();
-  bool amatch, bmatch;
+  bool firstMatch, secMatch;
   bool invalid = false;
 
   while(true) {
-    Card* amin = alice.min();
-    Card* bmax = bob.max();
-    amatch = false;
-    bmatch = false;
+    Card* primMin = alice.minim();
+    Card* pimMax = bob.maxim();
+    firstMatch = false;
+    secMatch = false;
 
-    while(!amatch && amin && alice.getSuccessor(amin->suit, amin->value)) {
-      Card* temp = alice.getSuccessor(amin->suit, amin->value);
-      if(bob.contains(amin->suit, amin->value)) {
-        cout << "Alice picked matching card " << amin->toString() << endl;
-        char temp1 = amin->suit;
-        int temp2 = amin->value;
+    while(!firstMatch && primMin && alice.getNext(primMin->suit, primMin->value)) {
+      Card* temp = alice.getNext(primMin->suit, primMin->value);
+      if(bob.contains(primMin->suit, primMin->value)) {
+        cout << "Alice picked matching card " << primMin->toString() << endl;
+        char temp1 = primMin->suit;
+        int temp2 = primMin->value;
         alice.remove(temp1, temp2);
         bob.remove(temp1, temp2);
-        amatch = true;
+        firstMatch = true;
       }
-      amin = temp;
+      primMin = temp;
     }
-    while(!bmatch && bmax && bob.getPredecessor(bmax->suit, bmax->value)) {
-      Card* temp = bob.getPredecessor(bmax->suit, bmax->value);
-      if(alice.contains(bmax->suit, bmax->value)) {
-        cout << "Bob picked matching card " << bmax->toString() << endl;
-        char temp1 = bmax->suit;
-        int temp2 = bmax->value;
+    while(!secMatch && pimMax && bob.getPrev(pimMax->suit, pimMax->value)) {
+      Card* temp = bob.getPrev(pimMax->suit, pimMax->value);
+      if(alice.contains(pimMax->suit, pimMax->value)) {
+        cout << "Bob picked matching card " << pimMax->toString() << endl;
+        char temp1 = pimMax->suit;
+        int temp2 = pimMax->value;
         bob.remove(temp1, temp2);
         alice.remove(temp1, temp2);
-        bmatch = true;
+        secMatch = true;
       }
-      bmax = temp;
+      pimMax = temp;
     }
-    if(!amatch || !bmatch || invalid) {
+    if(!firstMatch || !secMatch || invalid) {
       break;
     }
   }
 
   cout << "\nAlice's cards:" << endl;
-  alice.printInOrder();
+  alice.inOrderPrint();
   cout << "\nBob's cards:" << endl;
-  bob.printInOrder();
+  bob.inOrderPrint();
   return 0;
 }
